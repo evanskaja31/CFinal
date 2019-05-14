@@ -21,7 +21,7 @@ short moveRight[65536];
 short moveLeft[65536];
 short moveDown[65536];
 short moveUp[65536];
-short rowHeuristics[65536];
+float rowHeuristics[65536];
 
 
 short * moveList[4] = {moveRight, moveLeft, moveDown, moveUp};
@@ -261,74 +261,82 @@ int main() {
     initialize_move_list("MoveLeft.txt", moveLeft);
     initialize_move_list("MoveDown.txt", moveDown);
     initialize_move_list("MoveUp.txt", moveUp);
-    initialize_move_list("RowMonotonicityDictionary.txt", rowHeuristics);
+    initialize_move_list("CombinedDictionary.txt", rowHeuristics);
+
+    for(int games = 0; games < 10; games++) {
+        game_t game;
+        initialize_game(&game);
+        place_random_tile(&game);
+        place_random_tile(&game);
 
 
+        while (game.lost == 0) {
 
-    place_random_tile(&game);
-    place_random_tile(&game);
-
-
-
-    while(game.lost == 0){
-
-        int move = get_next_move(&game);
+            int move = get_next_move(&game);
 
 
+            if (move == -1) {
+                game.lost = 1;
+                break;
 
-        if(move == -1){
-            game.lost = 1;
-            break;
-
-        }
-        if(move < 2){
-            for(int r = 0; r < 4; r++){
-                game.rows[r] = moveList[move][game.rows[r]];
             }
-        } else {
+            if (move < 2) {
+                for (int r = 0; r < 4; r++) {
+                    game.rows[r] = moveList[move][game.rows[r]];
+                }
+            } else {
 
-            unsigned short cols[4] = {0,0,0,0};
-            cols[0] = (game.rows[0] & mask_arr[0]) | ((game.rows[1] & mask_arr[0]) >> 4) | ((game.rows[2] & mask_arr[0]) >> 8) | ((game.rows[3] & mask_arr[0]) >> 12);
-            cols[1] = ((game.rows[0] & mask_arr[1]) << 4) | (game.rows[1] & mask_arr[1]) | ((game.rows[2] & mask_arr[1]) >> 4) | ((game.rows[3] & mask_arr[1]) >> 8);
-            cols[2] = ((game.rows[0] & mask_arr[2]) << 8) | ((game.rows[1] & mask_arr[2]) << 4) | (game.rows[2] & mask_arr[2])  | ((game.rows[3] & mask_arr[2]) >> 4);
-            cols[3] = ((game.rows[0] & mask_arr[3]) << 12) | ((game.rows[1] & mask_arr[3]) << 8) | ((game.rows[2] & mask_arr[3]) <<4) | (game.rows[3] & mask_arr[3]);
+                unsigned short cols[4] = {0, 0, 0, 0};
+                cols[0] = (game.rows[0] & mask_arr[0]) | ((game.rows[1] & mask_arr[0]) >> 4) |
+                          ((game.rows[2] & mask_arr[0]) >> 8) | ((game.rows[3] & mask_arr[0]) >> 12);
+                cols[1] = ((game.rows[0] & mask_arr[1]) << 4) | (game.rows[1] & mask_arr[1]) |
+                          ((game.rows[2] & mask_arr[1]) >> 4) | ((game.rows[3] & mask_arr[1]) >> 8);
+                cols[2] = ((game.rows[0] & mask_arr[2]) << 8) | ((game.rows[1] & mask_arr[2]) << 4) |
+                          (game.rows[2] & mask_arr[2]) | ((game.rows[3] & mask_arr[2]) >> 4);
+                cols[3] = ((game.rows[0] & mask_arr[3]) << 12) | ((game.rows[1] & mask_arr[3]) << 8) |
+                          ((game.rows[2] & mask_arr[3]) << 4) | (game.rows[3] & mask_arr[3]);
 
 
-            for (int j = 0; j < 4; j++) {
-                cols[j] = moveList[move][cols[j]];
+                for (int j = 0; j < 4; j++) {
+                    cols[j] = moveList[move][cols[j]];
+                }
+
+                game.rows[0] =
+                        (cols[0] & mask_arr[0]) | ((cols[1] & mask_arr[0]) >> 4) | ((cols[2] & mask_arr[0]) >> 8) |
+                        ((cols[3] & mask_arr[0]) >> 12);
+                game.rows[1] =
+                        ((cols[0] & mask_arr[1]) << 4) | (cols[1] & mask_arr[1]) | ((cols[2] & mask_arr[1]) >> 4) |
+                        ((cols[3] & mask_arr[1]) >> 8);
+                game.rows[2] =
+                        ((cols[0] & mask_arr[2]) << 8) | ((cols[1] & mask_arr[2]) << 4) | (cols[2] & mask_arr[2]) |
+                        ((cols[3] & mask_arr[2]) >> 4);
+                game.rows[3] = ((cols[0] & mask_arr[3]) << 12) | ((cols[1] & mask_arr[3]) << 8) |
+                               ((cols[2] & mask_arr[3]) << 4) | (cols[3] & mask_arr[3]);
+
+
             }
 
-            game.rows[0] = (cols[0] & mask_arr[0]) | ((cols[1] & mask_arr[0]) >> 4) | ((cols[2] & mask_arr[0]) >> 8) | ((cols[3] & mask_arr[0]) >> 12);
-            game.rows[1] = ((cols[0] & mask_arr[1]) << 4) | (cols[1] & mask_arr[1]) | ((cols[2] & mask_arr[1]) >> 4) | ((cols[3] & mask_arr[1]) >> 8);
-            game.rows[2] = ((cols[0] & mask_arr[2]) << 8) | ((cols[1] & mask_arr[2]) << 4) | (cols[2] & mask_arr[2])  | ((cols[3] & mask_arr[2]) >> 4);
-            game.rows[3] = ((cols[0] & mask_arr[3]) << 12) | ((cols[1] & mask_arr[3]) << 8) | ((cols[2] & mask_arr[3]) <<4) | (cols[3] & mask_arr[3]);
+            game.number_moves += 1;
+
+
+            int new_tile = place_random_tile(&game);
+            if (new_tile == 0) {
+                game.lost = 0;
+            }
+            printf("%d\n", game.number_moves);
 
 
         }
 
-        game.number_moves += 1;
-
-
-
-
-        int new_tile = place_random_tile(&game);
-        if(new_tile == 0){
-            game.lost = 0;
-        }
         printf("%d\n", game.number_moves);
 
+        for (int row = 0; row < 4; row++) {
+            printf("%d\t%d\t%d\t%d\n", ((game.rows[row] & mask_arr[0]) >> 12), ((game.rows[row] & mask_arr[1]) >> 8),
+                   ((game.rows[row] & mask_arr[2]) >> 4), (game.rows[row] & mask_arr[3]));
+        }
 
 
     }
-
-    printf("%d\n", game.number_moves);
-
-    for(int row = 0; row < 4; row++){
-        printf("%d\t%d\t%d\t%d\n", ((game.rows[row] & mask_arr[0]) >> 12), ((game.rows[row] & mask_arr[1]) >> 8), ((game.rows[row] & mask_arr[2]) >> 4), (game.rows[row] & mask_arr[3]));
-    }
-
-
-
 
 
 
