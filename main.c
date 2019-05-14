@@ -33,6 +33,10 @@ short * moveList[4] = {moveRight, moveLeft, moveDown, moveUp};
 #define UP 3
 #define MAX_DEPTH 3
 
+#define NUMBER_OF_GAMES 50
+#define COL_WEIGHT 1
+#define STRATEGY "PushLeft\n"
+
 
 
 unsigned short mask_arr[4] = {0b1111000000000000, 0b0000111100000000, 0b0000000011110000, 0b0000000000001111};
@@ -239,7 +243,7 @@ float expectedScore(game_t * game, int current_depth, int max_depth){
             cols[3] = ((new_game.rows[0] & mask_arr[3]) << 12) | ((new_game.rows[1] & mask_arr[3]) << 8) | ((new_game.rows[2] & mask_arr[3]) <<4) | (new_game.rows[3] & mask_arr[3]);
 
             for(int col_count = 0; col_count < 4; col_count++) {
-                score += (0.9 / count) * rowHeuristics[cols[col_count]];
+                score += ((0.9 * COL_WEIGHT) / count) * rowHeuristics[cols[col_count]];
             }
         } else {
             score += (0.9 / count) * iterate_moves(game, current_depth, max_depth);
@@ -265,7 +269,7 @@ float expectedScore(game_t * game, int current_depth, int max_depth){
 
 
         }else {
-            score += (0.1 / count) * iterate_moves(game, current_depth, max_depth);
+            score += ((0.1 * COL_WEIGHT) / count) * iterate_moves(game, current_depth, max_depth);
 
 
         }
@@ -326,11 +330,11 @@ int main() {
     initialize_move_list("MoveLeft.txt", moveLeft);
     initialize_move_list("MoveDown.txt", moveDown);
     initialize_move_list("MoveUp.txt", moveUp);
-    initialize_heuristic_list("CombinedDictionary.txt", rowHeuristics);
+    initialize_heuristic_list("PushLeftDictionary.txt", rowHeuristics);
 
     time_t start_time = time(NULL);
 
-    for(int games = 0; games < 50; games++) {
+    for(int games = 0; games < NUMBER_OF_GAMES; games++) {
         game_t game;
         initialize_game(&game);
         place_random_tile(&game);
@@ -456,15 +460,18 @@ int main() {
 
     }
     time_t end_time = time(NULL);
-    printf("Points per game: %f\n", (double) total_points / (double) 50);
-    printf("Win Percentage: %f\n", (double) wins / (double) 50);
+    printf(STRATEGY);
+    printf("Number of Games: %d", NUMBER_OF_GAMES);
+    printf("Column Weight: %d", COL_WEIGHT);
+    printf("Points per game: %f\n", (double) total_points / (double) NUMBER_OF_GAMES);
+    printf("Win Percentage: %f\n", (double) wins / (double) NUMBER_OF_GAMES);
     printf("Best Score: %d\n", max_score);
     for (int row = 0; row < 4; row++) {
         printf("%d\t%d\t%d\t%d\n", ((best_game.rows[row] & mask_arr[0]) >> 12), ((best_game.rows[row] & mask_arr[1]) >> 8),
                ((best_game.rows[row] & mask_arr[2]) >> 4), (best_game.rows[row] & mask_arr[3]));
     }
 
-    printf("Time per Game: %f", (double) (end_time - start_time) / (double) 50);
+    printf("Time per Game: %f", (double) (end_time - start_time) / (double) NUMBER_OF_GAMES);
     printf("Time per Move: %f", (double) (end_time - start_time) / (double) total_moves);
 
 
