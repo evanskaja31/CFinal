@@ -313,6 +313,7 @@ int check_win(game_t * game){
 
 int main() {
     long total_points = 0;
+    long total_moves = 0;
     int wins = 0;
     int max_score = 0;
     game_t best_game;
@@ -327,7 +328,9 @@ int main() {
     initialize_move_list("MoveUp.txt", moveUp);
     initialize_heuristic_list("CombinedDictionary.txt", rowHeuristics);
 
-    for(int games = 0; games < 10; games++) {
+    time_t start_time = time(NULL);
+
+    for(int games = 0; games < 50; games++) {
         game_t game;
         initialize_game(&game);
         place_random_tile(&game);
@@ -443,6 +446,7 @@ int main() {
         total_points += score;
         game.won = check_win(&game);
         wins += game.won;
+        total_moves += game.number_moves;
 
         for (int row = 0; row < 4; row++) {
             printf("%d\t%d\t%d\t%d\n", ((game.rows[row] & mask_arr[0]) >> 12), ((game.rows[row] & mask_arr[1]) >> 8),
@@ -451,14 +455,18 @@ int main() {
 
 
     }
-
-    printf("Points per game: %f\n", (double) total_points / (double) 10);
-    printf("Win Percentage: %f\n", (double) wins / (double) 10);
+    time_t end_time = time(NULL);
+    printf("Points per game: %f\n", (double) total_points / (double) 50);
+    printf("Win Percentage: %f\n", (double) wins / (double) 50);
     printf("Best Score: %d\n", max_score);
     for (int row = 0; row < 4; row++) {
         printf("%d\t%d\t%d\t%d\n", ((best_game.rows[row] & mask_arr[0]) >> 12), ((best_game.rows[row] & mask_arr[1]) >> 8),
                ((best_game.rows[row] & mask_arr[2]) >> 4), (best_game.rows[row] & mask_arr[3]));
     }
+
+    printf("Time per Game: %f", (double) (end_time - start_time) / (double) 50);
+    printf("Time per Move: %f", (double) (end_time - start_time) / (double) total_moves);
+
 
 
 

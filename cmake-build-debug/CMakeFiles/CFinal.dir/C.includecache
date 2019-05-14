@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/evanskaja/Documents/CSCI4511/CFinal/main.c
+/home/evan/CFinal/main.c
 stdio.h
 -
 string.h
