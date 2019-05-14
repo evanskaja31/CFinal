@@ -60,6 +60,16 @@ void initialize_move_list(char * filename, short * arr){
     }
     fclose(file);
 }
+void initialize_heuristic_list(char * filename, float * arr){
+    FILE* file = fopen(filename, "r");
+    char temp[24];
+    for(int i = 0; i < 65536; i++){
+        fscanf(file, "%s", temp);
+        float val = atof(temp);
+        arr[i] = val;
+    }
+    fclose(file);
+}
 
 int place_random_tile(game_t * game){
     unsigned int tile_val;
@@ -109,7 +119,7 @@ int get_next_move(game_t * game){
                     new_game.rows[j] = moveList[i][new_game.rows[j]];
                     valid_move = 1;
                 }
-                temp_score += rowHeuristics[new_game.rows[j]];
+
             }
             temp_score = expectedScore(&new_game, 0, MAX_DEPTH);
         } else {
@@ -158,9 +168,10 @@ float iterate_moves(game_t * game, int current_depth, int max_depth){
                     new_game.rows[j] = moveList[i][new_game.rows[j]];
                     valid_move = 1;
                 }
-                temp_score += rowHeuristics[new_game.rows[j]];
             }
-            temp_score = expectedScore(&new_game, current_depth + 1,max_depth);
+            if(valid_move) {
+                temp_score = expectedScore(&new_game, current_depth + 1, max_depth);
+            }
         } else {
 
             unsigned short cols[4] = {0,0,0,0};
@@ -180,7 +191,9 @@ float iterate_moves(game_t * game, int current_depth, int max_depth){
             new_game.rows[1] = ((cols[0] & mask_arr[1]) << 4) | (cols[1] & mask_arr[1]) | ((cols[2] & mask_arr[1]) >> 4) | ((cols[3] & mask_arr[1]) >> 8);
             new_game.rows[2] = ((cols[0] & mask_arr[2]) << 8) | ((cols[1] & mask_arr[2]) << 4) | (cols[2] & mask_arr[2])  | ((cols[3] & mask_arr[2]) >> 4);
             new_game.rows[3] = ((cols[0] & mask_arr[3]) << 12) | ((cols[1] & mask_arr[3]) << 8) | ((cols[2] & mask_arr[3]) <<4) | (cols[3] & mask_arr[3]);
-            temp_score = expectedScore(&new_game, current_depth + 1, max_depth);
+            if(valid_move) {
+                temp_score = expectedScore(&new_game, current_depth + 1, max_depth);
+            }
 
         }
         if((temp_score > best_score) && valid_move){
@@ -218,6 +231,16 @@ float expectedScore(game_t * game, int current_depth, int max_depth){
             for(int row_count = 0; row_count < 4; row_count++) {
                 score += (0.9 / count) * rowHeuristics[game->rows[row_count]];
             }
+
+            unsigned short cols[4] = {0,0,0,0};
+            cols[0] = (new_game.rows[0] & mask_arr[0]) | ((new_game.rows[1] & mask_arr[0]) >> 4) | ((new_game.rows[2] & mask_arr[0]) >> 8) | ((new_game.rows[3] & mask_arr[0]) >> 12);
+            cols[1] = ((new_game.rows[0] & mask_arr[1]) << 4) | (new_game.rows[1] & mask_arr[1]) | ((new_game.rows[2] & mask_arr[1]) >> 4) | ((new_game.rows[3] & mask_arr[1]) >> 8);
+            cols[2] = ((new_game.rows[0] & mask_arr[2]) << 8) | ((new_game.rows[1] & mask_arr[2]) << 4) | (new_game.rows[2] & mask_arr[2])  | ((new_game.rows[3] & mask_arr[2]) >> 4);
+            cols[3] = ((new_game.rows[0] & mask_arr[3]) << 12) | ((new_game.rows[1] & mask_arr[3]) << 8) | ((new_game.rows[2] & mask_arr[3]) <<4) | (new_game.rows[3] & mask_arr[3]);
+
+            for(int col_count = 0; col_count < 4; col_count++) {
+                score += (0.9 / count) * rowHeuristics[cols[col_count]];
+            }
         } else {
             score += (0.9 / count) * iterate_moves(game, current_depth, max_depth);
 
@@ -229,8 +252,20 @@ float expectedScore(game_t * game, int current_depth, int max_depth){
             for(int row_count = 0; row_count < 4; row_count++) {
                 score += (0.1 / count) * rowHeuristics[game->rows[row_count]];
             }
+
+            unsigned short cols[4] = {0,0,0,0};
+            cols[0] = (new_game.rows[0] & mask_arr[0]) | ((new_game.rows[1] & mask_arr[0]) >> 4) | ((new_game.rows[2] & mask_arr[0]) >> 8) | ((new_game.rows[3] & mask_arr[0]) >> 12);
+            cols[1] = ((new_game.rows[0] & mask_arr[1]) << 4) | (new_game.rows[1] & mask_arr[1]) | ((new_game.rows[2] & mask_arr[1]) >> 4) | ((new_game.rows[3] & mask_arr[1]) >> 8);
+            cols[2] = ((new_game.rows[0] & mask_arr[2]) << 8) | ((new_game.rows[1] & mask_arr[2]) << 4) | (new_game.rows[2] & mask_arr[2])  | ((new_game.rows[3] & mask_arr[2]) >> 4);
+            cols[3] = ((new_game.rows[0] & mask_arr[3]) << 12) | ((new_game.rows[1] & mask_arr[3]) << 8) | ((new_game.rows[2] & mask_arr[3]) <<4) | (new_game.rows[3] & mask_arr[3]);
+
+            for(int col_count = 0; col_count < 4; col_count++) {
+                score += (0.1 / count) * rowHeuristics[cols[col_count]];
+            }
+
+
         }else {
-            score += (0.9 / count) * iterate_moves(game, current_depth, max_depth);
+            score += (0.1 / count) * iterate_moves(game, current_depth, max_depth);
 
 
         }
@@ -245,6 +280,21 @@ float expectedScore(game_t * game, int current_depth, int max_depth){
 }
 
 
+
+long actual_score(game_t * game){
+
+    long score = 0;
+    for(int i = 0; i < 16; i++){
+        unsigned int row = i / 4;
+        unsigned  int col = i % 4;
+        int val = (game ->rows[row] & mask_arr[col]) >> (12 - (4 * col));
+        score += pow(2, val) * (val - 1);
+    }
+
+
+    return score;
+
+}
 
 
 
@@ -261,9 +311,9 @@ int main() {
     initialize_move_list("MoveLeft.txt", moveLeft);
     initialize_move_list("MoveDown.txt", moveDown);
     initialize_move_list("MoveUp.txt", moveUp);
-    initialize_move_list("CombinedDictionary.txt", rowHeuristics);
+    initialize_heuristic_list("CombinedDictionary.txt", rowHeuristics);
 
-    for(int games = 0; games < 10; games++) {
+    for(int games = 0; games < 1; games++) {
         game_t game;
         initialize_game(&game);
         place_random_tile(&game);
@@ -329,6 +379,7 @@ int main() {
         }
 
         printf("%d\n", game.number_moves);
+        printf("%ld\n", actual_score(&game));
 
         for (int row = 0; row < 4; row++) {
             printf("%d\t%d\t%d\t%d\n", ((game.rows[row] & mask_arr[0]) >> 12), ((game.rows[row] & mask_arr[1]) >> 8),
