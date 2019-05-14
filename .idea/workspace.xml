@@ -12,8 +12,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="affd04d6-3d57-4a94-b1f4-aceeaf177542" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CFinal.dir/main.c.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -37,8 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="320" selection-start-line="320" selection-end-line="320" />
+            <state relative-caret-position="510">
+              <caret line="456" column="33" selection-start-line="456" selection-start-column="33" selection-end-line="456" selection-end-column="33" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -94,7 +92,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="x" value="1440" />
     <option name="y" value="-540" />
     <option name="width" value="1860" />
@@ -172,18 +170,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557777416701</updated>
-      <workItem from="1557777418657" duration="25616000" />
+      <workItem from="1557777418657" duration="27617000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25616000" />
+    <option name="totallyTimeSpent" value="27617000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1440" y="-540" width="1860" height="1440" extended-state="0" />
+    <frame x="1440" y="-540" width="3440" height="1440" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18646865" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09976457" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="CMake" />
       <window_info anchor="bottom" id="Database Changes" />
@@ -212,7 +211,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.c</url>
-          <line>414</line>
+          <line>467</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -263,8 +262,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="320" selection-start-line="320" selection-end-line="320" />
+        <state relative-caret-position="510">
+          <caret line="456" column="33" selection-start-line="456" selection-start-column="33" selection-end-line="456" selection-end-column="33" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

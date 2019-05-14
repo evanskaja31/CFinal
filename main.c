@@ -96,7 +96,7 @@ int place_random_tile(game_t * game){
     unsigned int random_val = open_tiles[rand() % count];
     game -> rows[random_val /4] = (game -> rows[random_val / 4] | tile_val << (12 - (4 * (random_val % 4))));
 
-    return 1;
+    return count;
 
 
 }
@@ -314,6 +314,8 @@ int check_win(game_t * game){
 int main() {
     long total_points = 0;
     int wins = 0;
+    int max_score = 0;
+    game_t best_game;
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
     srand(time(0));
@@ -330,12 +332,53 @@ int main() {
         initialize_game(&game);
         place_random_tile(&game);
         place_random_tile(&game);
+        int new_tile = 14;
 
 
         while (game.lost == 0) {
 
-            int move = get_next_move(&game);
+            // If more than 8 open spots, simply performs actions in the order Left, Up, Right, Down
+            int move = -1;
+            if(new_tile > 8){
+                for (int j = 0; j < 4; j++) {
+                    if(game.rows[j] != moveList[0][game.rows[j]]) {
+                        move = 0;
+                    }
+                }
 
+                if(move == -1) {
+                    unsigned short cols[4] = {0, 0, 0, 0};
+                    cols[0] = (game.rows[0] & mask_arr[0]) | ((game.rows[1] & mask_arr[0]) >> 4) |
+                              ((game.rows[2] & mask_arr[0]) >> 8) | ((game.rows[3] & mask_arr[0]) >> 12);
+                    cols[1] = ((game.rows[0] & mask_arr[1]) << 4) | (game.rows[1] & mask_arr[1]) |
+                              ((game.rows[2] & mask_arr[1]) >> 4) | ((game.rows[3] & mask_arr[1]) >> 8);
+                    cols[2] = ((game.rows[0] & mask_arr[2]) << 8) | ((game.rows[1] & mask_arr[2]) << 4) |
+                              (game.rows[2] & mask_arr[2]) | ((game.rows[3] & mask_arr[2]) >> 4);
+                    cols[3] = ((game.rows[0] & mask_arr[3]) << 12) | ((game.rows[1] & mask_arr[3]) << 8) |
+                              ((game.rows[2] & mask_arr[3]) << 4) | (game.rows[3] & mask_arr[3]);
+                    for (int j = 0; j < 4; j++) {
+                        if (cols[j] != moveList[3][cols[j]]) {
+                            move = 3;
+                        }
+                    }
+                }
+
+                if(move == -1){
+                    for (int j = 0; j < 4; j++) {
+                        if(game.rows[j] != moveList[1][game.rows[j]]) {
+                            move = 1;
+                        }
+                    }
+
+                }
+
+                if(move == -1){
+                    move = 2;
+                }
+
+            }else {
+                move = get_next_move(&game);
+            }
 
             if (move == -1) {
                 game.lost = 1;
@@ -381,7 +424,7 @@ int main() {
             game.number_moves += 1;
 
 
-            int new_tile = place_random_tile(&game);
+            new_tile = place_random_tile(&game);
             if (new_tile == 0) {
                 game.lost = 0;
             }
@@ -392,6 +435,10 @@ int main() {
 
         printf("%d\n", game.number_moves);
         long score = actual_score(&game);
+        if(score > max_score){
+            max_score = score;
+            best_game = game;
+        }
         printf("%ld\n", score);
         total_points += score;
         game.won = check_win(&game);
@@ -405,8 +452,14 @@ int main() {
 
     }
 
-    printf("Points per game: %f", (double) total_points / (double) 10);
-    printf("Win Percentage: %f", (double) wins / (double) 10);
+    printf("Points per game: %f\n", (double) total_points / (double) 10);
+    printf("Win Percentage: %f\n", (double) wins / (double) 10);
+    printf("Best Score: %d\n", max_score);
+    for (int row = 0; row < 4; row++) {
+        printf("%d\t%d\t%d\t%d\n", ((best_game.rows[row] & mask_arr[0]) >> 12), ((best_game.rows[row] & mask_arr[1]) >> 8),
+               ((best_game.rows[row] & mask_arr[2]) >> 4), (best_game.rows[row] & mask_arr[3]));
+    }
+
 
 
 
