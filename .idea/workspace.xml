@@ -13,6 +13,7 @@
   <component name="ChangeListManager">
     <list default="true" id="affd04d6-3d57-4a94-b1f4-aceeaf177542" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CFinal.dir/main.c.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -36,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2412">
-              <caret line="107" selection-start-line="107" selection-end-line="107" />
+            <state relative-caret-position="233">
+              <caret line="320" selection-start-line="320" selection-end-line="320" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -171,16 +172,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1557777416701</updated>
-      <workItem from="1557777418657" duration="23807000" />
+      <workItem from="1557777418657" duration="25616000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23807000" />
+    <option name="totallyTimeSpent" value="25616000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1440" y="-540" width="1860" height="1440" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18646865" />
@@ -212,7 +212,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.c</url>
-          <line>395</line>
+          <line>414</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -263,8 +263,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2412">
-          <caret line="107" selection-start-line="107" selection-end-line="107" />
+        <state relative-caret-position="233">
+          <caret line="320" selection-start-line="320" selection-end-line="320" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

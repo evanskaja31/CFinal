@@ -296,24 +296,36 @@ long actual_score(game_t * game){
 
 }
 
+int check_win(game_t * game){
+    for(int i = 0; i < 16; i++){
+        unsigned int row = i / 4;
+        unsigned  int col = i % 4;
+        int val = (game ->rows[row] & mask_arr[col]) >> (12 - (4 * col));
+        if (val >= 11){
+            return 1;
+        }
+    }
+    return 0;
+
+}
+
 
 
 int main() {
-    game_t game;
-    initialize_game(&game);
+    long total_points = 0;
+    int wins = 0;
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
     srand(time(0));
 
-    printf("%d\n", game.won);
-    printf("%d %d %d %d\n", game.rows[0], game.rows[1], game.rows[2], game.rows[3]);
+
     initialize_move_list("MoveRight.txt", moveRight);
     initialize_move_list("MoveLeft.txt", moveLeft);
     initialize_move_list("MoveDown.txt", moveDown);
     initialize_move_list("MoveUp.txt", moveUp);
     initialize_heuristic_list("CombinedDictionary.txt", rowHeuristics);
 
-    for(int games = 0; games < 1; games++) {
+    for(int games = 0; games < 10; games++) {
         game_t game;
         initialize_game(&game);
         place_random_tile(&game);
@@ -379,7 +391,11 @@ int main() {
         }
 
         printf("%d\n", game.number_moves);
-        printf("%ld\n", actual_score(&game));
+        long score = actual_score(&game);
+        printf("%ld\n", score);
+        total_points += score;
+        game.won = check_win(&game);
+        wins += game.won;
 
         for (int row = 0; row < 4; row++) {
             printf("%d\t%d\t%d\t%d\n", ((game.rows[row] & mask_arr[0]) >> 12), ((game.rows[row] & mask_arr[1]) >> 8),
@@ -388,6 +404,9 @@ int main() {
 
 
     }
+
+    printf("Points per game: %f", (double) total_points / (double) 10);
+    printf("Win Percentage: %f", (double) wins / (double) 10);
 
 
 
